@@ -1,0 +1,31 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: my-homepage
+
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100  # N+1 방지용 IN-query batch size
+    open-in-view: false  # OSIV 비활성화 (성능)
+
+jwt:
+  secret: ${JWT_SECRET}
+  access-token-validity: 1800000    # 30분
+  refresh-token-validity: 604800000  # 7일
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+storage:
+  type: ${STORAGE_TYPE:local}  # local | s3
