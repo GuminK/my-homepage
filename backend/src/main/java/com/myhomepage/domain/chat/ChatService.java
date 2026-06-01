@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +28,13 @@ public class ChatService {
     public List<ChatRoomResponse> getMyChatRooms(Long userId) {
         return chatRepository.findAllByUserId(userId).stream()
                 .map(ChatRoomResponse::from)
+                .collect(Collectors.toMap(
+                        r -> r.senderId().equals(userId) ? r.receiverId() : r.senderId(),
+                        r -> r,
+                        (a, b) -> a,  // 중복 시 최신(첫 번째) 유지
+                        LinkedHashMap::new
+                ))
+                .values().stream()
                 .toList();
     }
 

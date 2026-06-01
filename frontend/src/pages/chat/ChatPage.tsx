@@ -29,6 +29,7 @@ export default function ChatPage() {
     queryKey: ['chatUsers'],
     queryFn: () => api.get<ApiResponse<User[]>>('/chat/users'),
     enabled: tab === 'users',
+    gcTime: 0,
   });
 
   useEffect(() => {
