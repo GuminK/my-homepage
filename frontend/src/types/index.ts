@@ -62,15 +62,17 @@ export interface FileInfo {
 
 export interface ChatRoom {
   id: number;
-  sender: Pick<User, 'id' | 'nickname' | 'profileImageUrl'>;
-  receiver: Pick<User, 'id' | 'nickname' | 'profileImageUrl'>;
-  messages: ChatMessage[];
+  senderId: number;
+  senderNickname: string;
+  receiverId: number;
+  receiverNickname: string;
   createdAt: string;
 }
 
 export interface ChatMessage {
   id: number;
-  sender: Pick<User, 'id' | 'nickname'>;
+  senderId: number;
+  senderNickname: string;
   content: string;
   sentAt: string;
 }

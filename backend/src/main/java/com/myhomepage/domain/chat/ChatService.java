@@ -1,8 +1,11 @@
 package com.myhomepage.domain.chat;
 
 import com.myhomepage.domain.chat.dto.ChatMessageRequest;
+import com.myhomepage.domain.chat.dto.ChatMessageResponse;
+import com.myhomepage.domain.chat.dto.ChatRoomResponse;
 import com.myhomepage.domain.user.User;
 import com.myhomepage.domain.user.UserRepository;
+import com.myhomepage.domain.user.dto.UserResponse;
 import com.myhomepage.global.error.BusinessException;
 import com.myhomepage.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -17,15 +20,18 @@ import java.util.List;
 public class ChatService {
 
     private final ChatRepository chatRepository;
+    private final ChatMessageRepository chatMessageRepository;
     private final UserRepository userRepository;
 
-    public List<ChatRoom> getMyChatRooms(Long userId) {
-        return chatRepository.findAllByUserId(userId);
+    public List<ChatRoomResponse> getMyChatRooms(Long userId) {
+        return chatRepository.findAllByUserId(userId).stream()
+                .map(ChatRoomResponse::from)
+                .toList();
     }
 
     @Transactional
-    public ChatRoom getOrCreateRoom(Long myId, Long targetUserId) {
-        return chatRepository.findByParticipants(myId, targetUserId)
+    public ChatRoomResponse getOrCreateRoom(Long myId, Long targetUserId) {
+        ChatRoom room = chatRepository.findByParticipants(myId, targetUserId)
                 .orElseGet(() -> {
                     User me = userRepository.findById(myId)
                             .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
@@ -33,11 +39,23 @@ public class ChatService {
                             .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
                     return chatRepository.save(ChatRoom.builder().sender(me).receiver(target).build());
                 });
+        return ChatRoomResponse.from(room);
+    }
+
+    public List<ChatMessageResponse> getMessages(Long roomId, Long userId) {
+        ChatRoom room = chatRepository.findByIdWithParticipants(roomId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.CHAT_ROOM_NOT_FOUND));
+        if (!room.hasParticipant(userId)) {
+            throw new BusinessException(ErrorCode.CHAT_ACCESS_DENIED);
+        }
+        return chatMessageRepository.findByRoomIdWithSender(roomId).stream()
+                .map(ChatMessageResponse::from)
+                .toList();
     }
 
     @Transactional
-    public ChatMessage sendMessage(Long roomId, ChatMessageRequest request, Long senderId) {
-        ChatRoom room = chatRepository.findById(roomId)
+    public ChatMessageResponse sendMessage(Long roomId, ChatMessageRequest request, Long senderId) {
+        ChatRoom room = chatRepository.findByIdWithParticipants(roomId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.CHAT_ROOM_NOT_FOUND));
 
         if (!room.hasParticipant(senderId)) {
@@ -47,13 +65,19 @@ public class ChatService {
         User sender = userRepository.findById(senderId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        ChatMessage message = ChatMessage.builder()
+        ChatMessage message = chatMessageRepository.save(ChatMessage.builder()
                 .chatRoom(room)
                 .sender(sender)
                 .content(request.content())
-                .build();
+                .build());
 
-        room.getMessages().add(message);
-        return message;
+        return ChatMessageResponse.from(message);
+    }
+
+    public List<UserResponse> getAllUsersExcept(Long myId) {
+        return userRepository.findAll().stream()
+                .filter(u -> !u.getId().equals(myId))
+                .map(UserResponse::from)
+                .toList();
     }
 }
