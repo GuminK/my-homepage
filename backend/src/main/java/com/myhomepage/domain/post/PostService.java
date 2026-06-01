@@ -25,11 +25,13 @@ public class PostService {
     private final UserRepository userRepository;
     private final FileRepository fileRepository;
 
+    /** 게시글 목록을 최신순으로 페이지네이션하여 반환 */
     public Page<PostResponse> getPosts(Pageable pageable) {
         return postRepository.findAllByOrderByCreatedAtDesc(pageable)
                 .map(PostResponse::from);
     }
 
+    /** 게시글 단건 조회 및 조회수 증가 (author, attachments JOIN FETCH로 N+1 방지) */
     @Transactional
     public PostResponse getPost(Long postId) {
         Post post = postRepository.findByIdWithDetails(postId)
@@ -38,6 +40,7 @@ public class PostService {
         return PostResponse.from(post);
     }
 
+    /** 게시글 작성 — fileIds가 있으면 이미 업로드된 파일을 게시글에 연결 */
     @Transactional
     public PostResponse createPost(PostCreateRequest request, Long userId) {
         User author = userRepository.findById(userId)
@@ -58,6 +61,7 @@ public class PostService {
         return PostResponse.from(post);
     }
 
+    /** 게시글 수정 — 작성자 본인만 수정 가능 */
     @Transactional
     public PostResponse updatePost(Long postId, PostCreateRequest request, Long userId) {
         Post post = postRepository.findByIdWithAuthor(postId)
@@ -71,6 +75,7 @@ public class PostService {
         return PostResponse.from(post);
     }
 
+    /** 게시글 삭제 — 작성자 본인만 삭제 가능 */
     @Transactional
     public void deletePost(Long postId, Long userId) {
         Post post = postRepository.findByIdWithAuthor(postId)

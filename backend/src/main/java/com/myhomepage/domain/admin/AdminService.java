@@ -20,12 +20,17 @@ public class AdminService {
 
     private final UserRepository userRepository;
 
+    /** 전체 사용자 목록 반환 */
     public List<UserSummaryResponse> getUsers() {
         return userRepository.findAll().stream()
                 .map(UserSummaryResponse::from)
                 .toList();
     }
 
+    /**
+     * 사용자 역할 변경 — SUPER_ADMIN은 변경 불가,
+     * 또한 SUPER_ADMIN 역할로의 승격도 이 API에서는 불가 (보안상 제한)
+     */
     @Transactional
     public UserSummaryResponse updateUserRole(Long userId, UserRoleUpdateRequest request) {
         User user = userRepository.findById(userId)

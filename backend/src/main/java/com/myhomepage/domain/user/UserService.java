@@ -21,6 +21,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
+    /** 회원가입 — 이메일/닉네임 중복 검사 후 비밀번호 BCrypt 암호화하여 저장, 기본 역할은 USER */
     @Transactional
     public void signup(SignupRequest request) {
         if (userRepository.existsByEmail(request.email())) {
@@ -38,6 +39,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+    /** 로그인 — 이메일로 사용자 조회 후 비밀번호 검증, 성공 시 AccessToken + RefreshToken 발급 */
     public TokenResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_CREDENTIALS));
@@ -51,6 +53,7 @@ public class UserService {
         return TokenResponse.of(accessToken, refreshToken);
     }
 
+    /** 내 프로필 조회 */
     public UserResponse getMyProfile(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));

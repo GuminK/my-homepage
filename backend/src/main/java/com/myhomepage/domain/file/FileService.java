@@ -42,6 +42,10 @@ public class FileService {
             "video/mp4", "video/webm", "video/quicktime"
     );
 
+    /**
+     * 파일 업로드 — MinIO(S3 호환)에 저장 후 FileInfo를 DB에 기록하고 반환.
+     * 파일명 충돌 방지를 위해 UUID로 저장명 생성, 원본 파일명은 별도 보존.
+     */
     @Transactional
     public FileInfo upload(MultipartFile file, Long uploaderId) {
         User uploader = userRepository.findById(uploaderId)
@@ -63,6 +67,7 @@ public class FileService {
         return fileRepository.save(fileInfo);
     }
 
+    /** MinIO S3 버킷에 파일 업로드 후 접근 URL 반환 */
     private String uploadToStorage(MultipartFile file, String storedName) {
         try {
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
@@ -77,6 +82,7 @@ public class FileService {
         }
     }
 
+    /** MIME 타입으로 파일 종류 분류 — IMAGE / VIDEO / DOCUMENT */
     private FileType determineFileType(String contentType) {
         if (contentType == null) throw new BusinessException(ErrorCode.UNSUPPORTED_FILE_TYPE);
         if (ALLOWED_IMAGE_TYPES.contains(contentType)) return FileType.IMAGE;
@@ -84,6 +90,7 @@ public class FileService {
         return FileType.DOCUMENT;
     }
 
+    /** 파일명에서 확장자 추출 (예: ".jpg") */
     private String getExtension(String filename) {
         if (filename == null || !filename.contains(".")) return "";
         return filename.substring(filename.lastIndexOf("."));
