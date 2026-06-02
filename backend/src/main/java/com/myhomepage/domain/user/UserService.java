@@ -59,4 +59,16 @@ public class UserService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         return UserResponse.from(user);
     }
+
+    /** 닉네임 수정 — 다른 사용자와 중복 불가 */
+    @Transactional
+    public UserResponse updateNickname(Long userId, String nickname) {
+        if (userRepository.existsByNickname(nickname)) {
+            throw new BusinessException(ErrorCode.DUPLICATE_NICKNAME);
+        }
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        user.updateProfile(nickname, user.getProfileImageUrl());
+        return UserResponse.from(user);
+    }
 }

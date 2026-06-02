@@ -1,6 +1,7 @@
 package com.myhomepage.domain.user;
 
 import com.myhomepage.domain.user.dto.LoginRequest;
+import com.myhomepage.domain.user.dto.NicknameUpdateRequest;
 import com.myhomepage.domain.user.dto.SignupRequest;
 import com.myhomepage.domain.user.dto.TokenResponse;
 import com.myhomepage.domain.user.dto.UserResponse;
@@ -41,5 +42,13 @@ public class UserController {
     public ApiResponse<UserResponse> getMyProfile(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         return ApiResponse.ok(userService.getMyProfile(userDetails.getId()));
+    }
+
+    @Operation(summary = "닉네임 수정")
+    @PatchMapping("/me/nickname")
+    public ApiResponse<UserResponse> updateNickname(
+            @Valid @RequestBody NicknameUpdateRequest request,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ApiResponse.ok(userService.updateNickname(userDetails.getId(), request.nickname()));
     }
 }

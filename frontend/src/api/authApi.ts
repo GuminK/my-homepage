@@ -17,4 +17,8 @@ export const authApi = {
   /** 내 프로필 조회 */
   getMe: () =>
     api.get<ApiResponse<User>>('/auth/me'),
+
+  /** 닉네임 수정 */
+  updateNickname: (nickname: string) =>
+    api.patch<ApiResponse<User>>('/auth/me/nickname', { nickname }),
 };
