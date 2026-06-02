@@ -10,6 +10,7 @@ import NoticePage from '@/pages/notice/NoticePage';
 import AdminPage from '@/pages/admin/AdminPage';
 import ChatPage from '@/pages/chat/ChatPage';
 import MyPage from '@/pages/mypage/MyPage';
+import SchedulePage from '@/pages/schedule/SchedulePage';
 import ProtectedRoute from '@/components/common/ProtectedRoute';
 
 export const router = createBrowserRouter([
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
           { path: 'chat/:roomId', element: <ChatPage /> },
           { path: 'admin', element: <AdminPage /> },
           { path: 'mypage', element: <MyPage /> },
+          { path: 'schedule', element: <SchedulePage /> },
         ],
       },
     ],

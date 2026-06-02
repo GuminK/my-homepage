@@ -42,7 +42,14 @@ public enum ErrorCode {
     FILE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "F001", "파일 업로드에 실패했습니다."),
     FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "F002", "파일을 찾을 수 없습니다."),
     FILE_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, "F003", "파일 크기가 초과되었습니다."),
-    UNSUPPORTED_FILE_TYPE(HttpStatus.BAD_REQUEST, "F004", "지원하지 않는 파일 형식입니다.");
+    UNSUPPORTED_FILE_TYPE(HttpStatus.BAD_REQUEST, "F004", "지원하지 않는 파일 형식입니다."),
+
+    // Schedule
+    SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "SC001", "일정을 찾을 수 없습니다."),
+    SCHEDULE_CONFLICT(HttpStatus.CONFLICT, "SC002", "해당 시간에 이미 예약이 있습니다."),
+    SCHEDULE_ACCESS_DENIED(HttpStatus.FORBIDDEN, "SC003", "일정 취소 권한이 없습니다."),
+    SCHEDULE_INVALID_TIME(HttpStatus.BAD_REQUEST, "SC004", "시간은 30분 단위로만 설정 가능합니다."),
+    SCHEDULE_OUT_OF_RANGE(HttpStatus.BAD_REQUEST, "SC005", "예약 가능한 날짜 범위를 초과했습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

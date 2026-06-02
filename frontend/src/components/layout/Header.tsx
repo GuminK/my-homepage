@@ -23,6 +23,9 @@ export default function Header() {
           {isAuthenticated && (
             <Link to="/chat" className="text-sm text-gray-600 hover:text-gray-900">채팅</Link>
           )}
+          {isAuthenticated && (
+            <Link to="/schedule" className="text-sm text-gray-600 hover:text-gray-900">합주 예약</Link>
+          )}
           {isSuperAdmin && (
             <Link to="/admin" className="text-sm text-red-500 hover:text-red-700 font-medium">관리자</Link>
           )}
