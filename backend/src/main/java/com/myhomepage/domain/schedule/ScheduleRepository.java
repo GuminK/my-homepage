@@ -24,9 +24,9 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     /** 충돌 검사 시 자기 자신(수정 중인 일정)은 제외 */
     @Query("SELECT s FROM Schedule s WHERE s.date = :date AND s.startTime < :endTime AND s.endTime > :startTime AND s.id <> :excludeId")
     List<Schedule> findOverlappingExcluding(@Param("date") LocalDate date,
-                                             @Param("startTime") LocalTime startTime,
-                                             @Param("endTime") LocalTime endTime,
-                                             @Param("excludeId") Long excludeId);
+                                            @Param("startTime") LocalTime startTime,
+                                            @Param("endTime") LocalTime endTime,
+                                            @Param("excludeId") Long excludeId);
 
     @Query("SELECT s FROM Schedule s JOIN FETCH s.user WHERE s.id = :id")
     Optional<Schedule> findByIdWithUser(@Param("id") Long id);
