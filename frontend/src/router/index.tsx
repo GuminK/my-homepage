@@ -11,6 +11,7 @@ import AdminPage from '@/pages/admin/AdminPage';
 import ChatPage from '@/pages/chat/ChatPage';
 import MyPage from '@/pages/mypage/MyPage';
 import SchedulePage from '@/pages/schedule/SchedulePage';
+import ChordPage from '@/pages/chord/ChordPage';
 import ProtectedRoute from '@/components/common/ProtectedRoute';
 
 export const router = createBrowserRouter([
@@ -21,6 +22,8 @@ export const router = createBrowserRouter([
       { index: true, element: <PostListPage /> },
       { path: 'posts/:id', element: <PostDetailPage /> },
       { path: 'notices', element: <NoticePage /> },
+      { path: 'schedule', element: <SchedulePage /> },
+      { path: 'chord', element: <ChordPage /> },
       {
         element: <ProtectedRoute />,
         children: [
@@ -30,7 +33,6 @@ export const router = createBrowserRouter([
           { path: 'chat/:roomId', element: <ChatPage /> },
           { path: 'admin', element: <AdminPage /> },
           { path: 'mypage', element: <MyPage /> },
-          { path: 'schedule', element: <SchedulePage /> },
         ],
       },
     ],

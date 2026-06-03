@@ -24,7 +24,7 @@ const SCHEDULE_COLORS = [
 const getColor = (scheduleId: number) => SCHEDULE_COLORS[scheduleId % SCHEDULE_COLORS.length];
 
 export default function SchedulePage() {
-  const { user, isAdmin, isSuperAdmin } = useAuthStore();
+  const { user, isAdmin, isSuperAdmin, isAuthenticated } = useAuthStore();
   const queryClient = useQueryClient();
   const isManager = isAdmin || isSuperAdmin;
 
@@ -185,7 +185,7 @@ export default function SchedulePage() {
                   onClick={() => setSelectedDate(date)}
                   className={`
                     relative flex flex-col items-center rounded-lg text-sm p-1 min-h-[56px]
-                    ${isSelected ? 'bg-blue-600 text-white' : isToday ? 'bg-blue-50 border border-blue-300' : 'hover:bg-gray-50'}
+                    ${isSelected ? 'bg-blue-50 border-2 border-blue-400 font-semibold' : isToday ? 'bg-blue-50 border border-blue-300' : 'hover:bg-gray-50'}
                     ${isPast || isFuture ? 'opacity-40 cursor-default' : ''}
                     ${!isSelected && dayOfWeek === 0 ? 'text-red-500' : ''}
                     ${!isSelected && dayOfWeek === 6 ? 'text-blue-500' : ''}
@@ -198,10 +198,7 @@ export default function SchedulePage() {
                         <div
                           key={s.id}
                           className={`w-full text-xs px-1 rounded truncate leading-4
-                            ${isSelected
-                              ? 'bg-white/20 text-white'
-                              : `${getColor(s.id).bg} ${getColor(s.id).text}`
-                            }`}
+                            ${getColor(s.id).bg} ${getColor(s.id).text}`}
                         >
                           {s.songName}
                         </div>
@@ -219,13 +216,14 @@ export default function SchedulePage() {
           </div>
         </div>
 
+
         {/* 선택된 날 상세 */}
         <div className="w-72 bg-white rounded-lg shadow p-4">
           {selectedDate ? (
             <>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="font-semibold">{dayjs(selectedDate).format('M월 D일 (ddd)')}</h2>
-                {selectedDate >= today && selectedDate <= maxDate && (
+                {isAuthenticated && selectedDate >= today && selectedDate <= maxDate && (
                   <button
                     onClick={() => openCreate(selectedDate)}
                     className="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700"
