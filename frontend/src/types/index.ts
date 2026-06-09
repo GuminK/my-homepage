@@ -76,3 +76,11 @@ export interface ChatMessage {
   content: string;
   sentAt: string;
 }
+
+export interface GlobalChatMessage {
+  id: number;
+  senderId: number;
+  senderNickname: string;
+  content: string;
+  sentAt: string;
+}

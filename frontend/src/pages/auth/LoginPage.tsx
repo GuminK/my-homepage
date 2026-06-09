@@ -38,7 +38,11 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow">
-        <h1 className="text-2xl font-bold text-center mb-6">로그인</h1>
+        <div className="flex items-center justify-between mb-6">
+          <Link to="/" className="text-sm text-gray-400 hover:text-gray-600">← 홈으로</Link>
+          <h1 className="text-2xl font-bold">로그인</h1>
+          <div className="w-16" />
+        </div>
         <form onSubmit={handleSubmit((data) => login(data))} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">이메일</label>
