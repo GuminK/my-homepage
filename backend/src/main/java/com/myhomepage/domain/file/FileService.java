@@ -29,11 +29,17 @@ public class FileService {
     private final UserRepository userRepository;
     private final S3Client s3Client;
 
-    @Value("${storage.minio.endpoint}")
+    @Value("${storage.minio.endpoint:}")
     private String minioEndpoint;
 
     @Value("${storage.minio.bucket-name:myhomepage}")
-    private String bucketName;
+    private String minioBucketName;
+
+    @Value("${storage.s3.bucket-name:}")
+    private String s3BucketName;
+
+    @Value("${storage.s3.region:ap-northeast-2}")
+    private String s3Region;
 
     private static final List<String> ALLOWED_IMAGE_TYPES = Arrays.asList(
             "image/jpeg", "image/png", "image/gif", "image/webp"
@@ -67,16 +73,20 @@ public class FileService {
         return fileRepository.save(fileInfo);
     }
 
-    /** MinIO S3 버킷에 파일 업로드 후 접근 URL 반환 */
     private String uploadToStorage(MultipartFile file, String storedName) {
+        boolean isMinio = minioEndpoint != null && !minioEndpoint.isBlank();
+        String bucket = isMinio ? minioBucketName : s3BucketName;
         try {
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                    .bucket(bucketName)
+                    .bucket(bucket)
                     .key(storedName)
                     .contentType(file.getContentType())
                     .build();
             s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
-            return String.format("%s/%s/%s", minioEndpoint, bucketName, storedName);
+            if (isMinio) {
+                return String.format("%s/%s/%s", minioEndpoint, bucket, storedName);
+            }
+            return String.format("https://%s.s3.%s.amazonaws.com/%s", bucket, s3Region, storedName);
         } catch (IOException e) {
             throw new BusinessException(ErrorCode.FILE_UPLOAD_FAILED);
         }

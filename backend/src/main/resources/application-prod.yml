@@ -10,7 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate  # prod에서는 절대 update/create 사용 금지
+      ddl-auto: validate
     show-sql: false
 
   data:

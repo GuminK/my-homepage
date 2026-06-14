@@ -19,11 +19,18 @@ public class MinioInitializer implements ApplicationRunner {
 
     private final S3Client s3Client;
 
+    @Value("${storage.minio.endpoint:}")
+    private String minioEndpoint;
+
     @Value("${storage.minio.bucket-name:myhomepage}")
     private String bucketName;
 
     @Override
     public void run(ApplicationArguments args) {
+        if (minioEndpoint == null || minioEndpoint.isBlank()) {
+            log.info("MinIO not configured, skipping bucket initialization");
+            return;
+        }
         try {
             s3Client.headBucket(HeadBucketRequest.builder().bucket(bucketName).build());
             log.info("MinIO bucket '{}' already exists", bucketName);
