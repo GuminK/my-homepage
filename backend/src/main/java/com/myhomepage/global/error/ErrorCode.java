@@ -44,6 +44,10 @@ public enum ErrorCode {
     FILE_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, "F003", "파일 크기가 초과되었습니다."),
     UNSUPPORTED_FILE_TYPE(HttpStatus.BAD_REQUEST, "F004", "지원하지 않는 파일 형식입니다."),
 
+    // ChordSheet
+    CHORD_SHEET_NOT_FOUND(HttpStatus.NOT_FOUND, "CS001", "코드 악보를 찾을 수 없습니다."),
+    CHORD_SHEET_ACCESS_DENIED(HttpStatus.FORBIDDEN, "CS002", "코드 악보 수정/삭제 권한이 없습니다."),
+
     // Schedule
     SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "SC001", "일정을 찾을 수 없습니다."),
     SCHEDULE_CONFLICT(HttpStatus.CONFLICT, "SC002", "해당 시간에 이미 예약이 있습니다."),

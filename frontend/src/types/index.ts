@@ -77,6 +77,26 @@ export interface ChatMessage {
   sentAt: string;
 }
 
+export interface ChordSheet {
+  id: number;
+  title: string;
+  artist: string;
+  content: string;
+  capo: number;
+  author: Pick<User, 'id' | 'nickname'>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ChordSheetListItem {
+  id: number;
+  title: string;
+  artist: string;
+  capo: number;
+  author: Pick<User, 'id' | 'nickname'>;
+  createdAt: string;
+}
+
 export interface GlobalChatMessage {
   id: number;
   senderId: number;

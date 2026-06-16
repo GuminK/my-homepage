@@ -39,6 +39,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/notices/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/schedules/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/chord-sheets/**").permitAll()
                         .requestMatchers("/api/v1/notices/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
                         .requestMatchers("/api/v1/admin/**").hasRole("SUPER_ADMIN")
                         .requestMatchers("/ws/**").permitAll()
